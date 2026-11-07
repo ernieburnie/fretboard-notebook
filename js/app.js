@@ -752,10 +752,39 @@
       <img src="${n.img}" alt="${tx(n.title)}" loading="lazy">
       <div><h3>${tx(n.title)}</h3><ul>${tx(n.points).map(p => `<li>${p}</li>`).join('')}</ul></div></article>`).join('');
     $$('#notesList img').forEach(img => img.onclick = () => {
-      const lb = $('#lightbox'); lb.querySelector('img').src = img.src; lb.hidden = false;
+      $('#lbImg').src = img.src; $('#lightbox').classList.remove('zoomed'); $('#lightbox').hidden = false;
     });
   }
-  $('#lightbox').onclick = () => { $('#lightbox').hidden = true; };
+  // Photo viewer: click photo = toggle fit / full size, drag or scroll to pan, ✕ / Esc / backdrop = close.
+  const lb = $('#lightbox'), lbScroll = $('#lbScroll');
+  const closeLb = () => { lb.hidden = true; lb.classList.remove('zoomed'); };
+  let drag = null, dragged = false;
+  $('#lbImg').onclick = e => {
+    if (dragged) return;
+    const zoomIn = !lb.classList.contains('zoomed');
+    const r = e.target.getBoundingClientRect();
+    const fx = (e.clientX - r.left) / r.width, fy = (e.clientY - r.top) / r.height;
+    lb.classList.toggle('zoomed', zoomIn);
+    if (zoomIn) { // keep the clicked spot under the cursor
+      lbScroll.scrollLeft = fx * lbScroll.scrollWidth - e.clientX;
+      lbScroll.scrollTop = fy * lbScroll.scrollHeight - e.clientY;
+    }
+  };
+  lbScroll.onclick = e => { if (e.target === lbScroll && !dragged) closeLb(); };
+  $('#lbClose').onclick = closeLb;
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !lb.hidden) closeLb(); });
+  lbScroll.addEventListener('mousedown', e => {
+    if (!lb.classList.contains('zoomed')) return;
+    drag = { x: e.clientX, y: e.clientY, l: lbScroll.scrollLeft, t: lbScroll.scrollTop }; dragged = false;
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove', e => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (Math.abs(dx) + Math.abs(dy) > 4) dragged = true;
+    lbScroll.scrollLeft = drag.l - dx; lbScroll.scrollTop = drag.t - dy;
+  });
+  window.addEventListener('mouseup', () => { drag = null; setTimeout(() => { dragged = false; }, 0); });
 
   // ---------- refresh ----------
   // ---------- GP-style chrome: LCD, title bar, positions "track" panel ----------

@@ -287,7 +287,13 @@
   </div>
 
 
-<div id="lightbox" class="lightbox" hidden><img alt=""></div>
+<div id="lightbox" class="lightbox" hidden>
+  <div class="lb-scroll" id="lbScroll"><img alt="" id="lbImg"></div>
+  <div class="lb-bar">
+    <span class="lb-hint"><span class="en">Click the photo to zoom · drag or scroll to move</span><span class="zh">點照片放大縮小 · 拖曳或捲動移動</span></span>
+    <button class="lb-close" id="lbClose" aria-label="Close">✕</button>
+  </div>
+</div>
 
 <script src="js/theory.js"></script>
 <script src="js/audio.js"></script>
