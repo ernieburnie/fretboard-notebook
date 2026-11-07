@@ -466,3 +466,6 @@ table.mini th { text-align: left; color: var(--muted); font-weight: 500; }
 /* position buttons match the Connect colours on the neck */
 .badges button.link-a, .badges button.link-a.on { background: var(--blue); color: #fff; }
 .badges button.link-b { background: #9a6fe0; color: #fff; }
+
+.info-cards { margin-top: 18px; }
+.info-cards .box h3 { font-size: 1.05rem; }
