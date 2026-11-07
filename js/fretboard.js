@@ -19,8 +19,9 @@ const Fretboard = (() => {
     const lineX = f => left + openW + (f - o.fretStart + (o.fretStart === 0 ? 0 : 1)) * FW;
     const cx = f => (f === 0 && o.fretStart === 0) ? left + openW / 2 : lineX(f) - FW / 2;
     const cy = s => top + (5 - s) * SG;
-    const width = lineX(o.fretEnd) + 12;
-    const height = top + 5 * SG + 30;
+    const labelRoom = (o.boxes && o.boxes.some(b => b.label)) ? 56 : 12; // keep 型 labels inside the drawing
+    const width = lineX(o.fretEnd) + labelRoom;
+    const height = top + 5 * SG + 40;
 
     container.innerHTML = '';
     const svg = el('svg', { viewBox: `0 0 ${width} ${height}`, class: 'fb' + (o.compact ? ' compact' : ''), role: 'img' });
@@ -51,7 +52,7 @@ const Fretboard = (() => {
     // fret numbers
     for (let f = Math.max(o.fretStart, 0); f <= o.fretEnd; f++) {
       if (f === 0) continue;
-      const t = el('text', { x: cx(f), y: cy(0) + 24, class: 'fb-num' + ([3, 5, 7, 9, 12, 15, 17].includes(f) ? ' strong' : '') }, svg);
+      const t = el('text', { x: cx(f), y: cy(0) + 34, class: 'fb-num' + ([3, 5, 7, 9, 12, 15, 17].includes(f) ? ' strong' : '') }, svg);
       t.textContent = f;
     }
     // strings
