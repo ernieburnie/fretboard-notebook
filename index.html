@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fretboard Notebook</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="lang-en">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="logo">♪</span>
+        <span class="name"><span class="en">Fretboard Notebook</span><span class="zh">吉他課筆記</span></span>
+      </div>
+      <div class="transport">
+        <button class="tp-btn play" id="playPos" title="Play position"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 6.2 L19 12 L8.5 17.8 Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></button>
+        <button class="tp-btn" id="stopBtn" title="Stop"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="1.5"/></svg></button>
+        <div class="seg-dark" id="playMode">
+          <button data-m="pos"><span class="en">Position ↑↓</span><span class="zh">整個把位 ↑↓</span></button>
+          <button data-m="octave"><span class="en">One octave</span><span class="zh">一個八度</span></button>
+          <button data-m="triad"><span class="en">Chord tones</span><span class="zh">和弦音</span></button>
+        </div>
+        <div class="lcd">
+          <div class="lcd-row1" id="lcdTitle"></div>
+          <div class="lcd-row2"><span id="lcdSub"></span></div>
+        </div>
+        <div class="tempo" title="Tempo">
+          <button class="tempo-btn" id="bpmDown" aria-label="Slower">−</button>
+          <div class="tempo-val"><small>♩ =</small><b id="bpmVal">110</b></div>
+          <button class="tempo-btn" id="bpmUp" aria-label="Faster">+</button>
+        </div>
+      </div>
+      <div class="lang-switch" id="langSwitch">
+        <button data-lang="en">EN</button>
+        <button data-lang="zh">中文</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+  <!-- LEFT: navigation -->
+  <nav class="side side-left" id="tabs">
+    <div class="side-head"><span class="en">Lessons</span><span class="zh">內容</span></div>
+    <button data-tab="fretboard"><i>▦</i><span class="en">Fretboard</span><span class="zh">指板</span></button>
+    <button data-tab="anchors"><i>⚓</i><span class="en">Anchors</span><span class="zh">定位（錨點）</span></button>
+    <button data-tab="cells"><i>型</i><span class="en">Cells 型</span><span class="zh">型（小方塊）</span></button>
+    <button data-tab="minor"><i>⇄</i><span class="en">Major ↔ Minor</span><span class="zh">大調 ↔ 小調</span></button>
+    <button data-tab="modes"><i>七</i><span class="en">Modes</span><span class="zh">調式 一～七</span></button>
+    <button data-tab="practice"><i>✓</i><span class="en">Practice</span><span class="zh">練習</span></button>
+    <button data-tab="perspectives"><i>◎</i><span class="en">Other ways to learn it</span><span class="zh">其他教法</span></button>
+    <button data-tab="notes"><i>✎</i><span class="en">Lesson notes</span><span class="zh">上課筆記</span></button>
+  </nav>
+
+  <main class="page">
+
+    <!-- FRETBOARD -->
+    <section id="tab-fretboard" class="tab">
+      <div class="score-head">
+        <h2 id="fbTitle"></h2>
+        <p class="sub" id="fbSub"></p>
+      </div>
+      <div class="keyline" id="keyline"></div>
+      <div class="toolbar">
+        <div class="badges" id="posSeg"></div>
+        <button class="link-btn" id="linkBtn" title="Show this position together with the next one up the neck"><span class="en">⇄ Connect next</span><span class="zh">⇄ 連接下一個</span></button>
+        <div class="conn-legend" id="connLegend"></div>
+      </div>
+      <div class="board-wrap"><div id="mainBoard" class="board"></div></div>
+      <p class="link-info" id="linkInfo"></p>
+    </section>
+
+    <!-- ANCHORS -->
+    <section id="tab-anchors" class="tab">
+      <div class="score-head">
+        <h2><span class="en">Anchors</span><span class="zh">定位（錨點）</span></h2>
+        <p class="sub"><span class="en">Lock a finger on the root, and the shape builds itself around it</span><span class="zh">把一根手指釘在主音上，形狀就會自己長出來</span></p>
+      </div>
+      <p class="lead"><span class="en">This is the idea from class that isn't really written in the notes: don't memorize 5 shapes, memorize <b>where your hand sits relative to the root</b>.</span><span class="zh">這是上課講過、但筆記沒寫太多的概念：不要死背 5 個形狀，要記的是<b>手相對於主音的位置</b>。</span></p>
+      <div class="rule-list">
+        <div class="box"><h3><span class="rule-num">1</span><span class="en">The anchor</span><span class="zh">錨點</span></h3>
+          <p><span class="en">Pick a root note and decide which finger sits on it. That finger is your anchor. Everything else is measured from it.</span><span class="zh">挑一個主音，決定用哪根手指按它。那根手指就是你的錨點，其他音都從它推出來。</span></p></div>
+        <div class="box"><h3><span class="rule-num">2</span><span class="en">Index = the floor</span><span class="zh">食指 = 地板</span></h3>
+          <p><span class="en">The lowest note on each string is always played by the index finger (食). Nothing goes lower than the index.</span><span class="zh">每條弦最低的那個音，一定用食指按。沒有音會比食指更低。</span></p></div>
+        <div class="box"><h3><span class="rule-num">3</span><span class="en">Shift, then come back</span><span class="zh">換把，再回來</span></h3>
+          <p><span class="en">If a string's lowest note is higher than where your index is, slide the hand up for that string, then come back. In A major P4: B string +1, high e −1.</span><span class="zh">如果某條弦最低的音比食指的位置高，那條弦就整隻手往上移，彈完再移回來。A 大調 P4：B 弦 +1，高音 e 弦 −1。</span></p></div>
+      </div>
+      <div class="box">
+        <h3><span class="en">Change the anchor, get a new shape</span><span class="zh">換一個錨點，就是一個新形狀</span></h3>
+        <p class="muted"><span class="en">Each square means "put the root on this string, under this finger". Click one to see the shape it creates. Empty squares never happen with your teacher's fingering.</span><span class="zh">每一格代表「主音放在這條弦、用這根手指」。點一下看會長出哪個形狀。空格表示用老師的指法不會出現這種情況。</span></p>
+        <div id="anchorGrid"></div>
+        <p id="anchorInsight" class="note"></p>
+      </div>
+      <div class="box">
+        <h3 id="anchorTitle"></h3>
+        <div class="board-wrap"><div id="anchorBoard" class="board"></div></div>
+        <div id="anchorSteps"></div>
+        <div class="playbar"><button class="btn primary" id="anchorPlay">▶ <span class="en">Play this shape</span><span class="zh">彈這個形狀</span></button>
+          <button class="btn" id="anchorOpen"><span class="en">Open on the Fretboard →</span><span class="zh">在指板頁打開 →</span></button></div>
+      </div>
+      <div class="box">
+        <h3><span class="en">Is this a common way to teach?</span><span class="zh">這是常見的教法嗎？</span></h3>
+        <p><span class="en">Yes. Many methods describe scale shapes by <b>which finger plays the root, on which string</b>. "Root on the 6th string under the middle finger" is a standard way to name the shape you call P4. Berklee's guitar method sorts its major-scale fingerings this way, and CAGED teachers say "find the root, know which finger is on it".</span><span class="zh">是的。很多教法都用<b>「主音在哪條弦、用哪根手指」</b>來形容音階形狀。「主音在第 6 弦、用中指」就是在講你的 P4。Berklee 的吉他教材就是這樣分類大調指型的，CAGED 的老師也常說「先找主音，知道是哪根手指在按它」。</span></p>
+        <p><span class="en">Your teacher's twist is rule 2 (index = floor). Pure "one finger per fret" would keep the hand still and play that B-string note with the middle finger instead of shifting. Shifting makes every string start the same way (食 first, like every 型 cell), which is easier to remember; staying still means less movement, which helps at high speed. Flip <b>Fingering</b> in the right panel to compare.</span><span class="zh">老師特別的地方是規則 2（食指 = 地板）。如果是單純「一指一格」，手會停在原地，B 弦那個音改用中指按，不用換把。換把的好處是每條弦起手都一樣（先食指，就像每個「型」），比較好記；不換把的好處是手移動少，彈快的時候比較順。可以在右邊把<b>指法方式</b>切換看看。</span></p>
+      </div>
+    </section>
+
+    <!-- CELLS -->
+    <section id="tab-cells" class="tab">
+      <div class="score-head">
+        <h2><span class="en">Cells 型</span><span class="zh">型</span></h2>
+        <p class="sub"><span class="en">The building blocks</span><span class="zh">拼出整個把位的小積木</span></p>
+      </div>
+      <p class="lead"><span class="en">Your teacher splits every position into small <b>2-string chunks</b>. Each one is named after the note your index finger plays on the lower string. Learn these 3 and every position is just them stacked up.</span><span class="zh">老師把每個把位拆成<b>兩條弦一組</b>的小方塊，名字就是食指在低音那條弦按的音。記住這 3 個型，所有把位都只是把它們疊起來而已。</span></p>
+      <div class="cells-row" id="cellCards"></div>
+      <div class="box">
+        <h3><span class="en">Why there are exactly 5 positions</span><span class="zh">為什麼剛好是 5 個把位？</span></h3>
+        <p><span class="en">Going across the strings, the scale always breaks into the same 5 groups, over and over:</span><span class="zh">從低音弦往高音弦走，音階永遠是這 5 組一直重複：</span></p>
+        <div class="cycle" id="cycleStrip"></div>
+        <p><span class="en">A position is just <b>6 groups in a row</b> (one per string). There are 5 places you can start, so you get 5 positions. Pick one:</span><span class="zh">一個把位就是<b>連續 6 組</b>（每條弦一組）。起點只有 5 種，所以就是 5 個把位。選一個看看：</span></p>
+        <div class="badges" id="cycleSeg"></div>
+        <div class="stack-wrap"><div id="cycleStack"></div><div id="cycleBoard" class="board small"></div></div>
+        <p class="note">⚠️ <span class="en"><b>The G→B string thing.</b> Most strings are 5 frets apart, but G to B is only 4. So when a cell crosses from G to B, the top part moves <b>up one fret</b>. Same cell, just a little bent. That's why some boxes look slanted (dashed outline).</span><span class="zh"><b>G 弦到 B 弦的問題：</b>大部分相鄰的弦差 5 格，只有 G 到 B 差 4 格。所以「型」跨過 G→B 的時候，上面那條弦要<b>往後移一格</b>。還是同一個型，只是歪一點，所以有些框看起來斜斜的（虛線框）。</span></p>
+      </div>
+    </section>
+
+    <!-- MINOR -->
+    <section id="tab-minor" class="tab">
+      <div class="score-head">
+        <h2><span class="en">Major ↔ Minor</span><span class="zh">大調 ↔ 小調</span></h2>
+        <p class="sub"><span class="en">Two ways to count (A / B)</span><span class="zh">兩種數法（A / B）</span></p>
+      </div>
+      <p class="lead"><span class="en">Your notes count the same minor scale two different ways. Neither is wrong. Lots of jazz and theory books use <b>A</b>, lots of pop teachers use <b>B</b>. It's worth getting comfortable with both.</span><span class="zh">筆記裡同一個小調音階有兩種數法，沒有誰對誰錯。很多爵士、樂理書用 <b>A</b>，很多流行音樂老師用 <b>B</b>。兩種都熟最好。</span></p>
+      <div class="grid2">
+        <div class="box">
+          <h3><span class="en">Major</span><span class="zh">大調</span></h3>
+          <div class="formula" id="fMajor"></div>
+          <p class="muted"><span class="en">The half steps (H, 1 fret) are between <b>3–4 (Mi–Fa)</b> and <b>7–1 (Si–Do)</b>. Everything else is a whole step (W, 2 frets).</span><span class="zh">半音（H，差 1 格）在 <b>3–4（Mi–Fa）</b>和 <b>7–1（Si–Do）</b>，其他都是全音（W，差 2 格）。</span></p>
+        </div>
+        <div class="box">
+          <h3><span class="en">Minor, way</span><span class="zh">小調，</span> <span class="pill a">A</span> <span class="en">(the root is 1 / Do)</span><span class="zh">（主音當 1 / Do）</span></h3>
+          <div class="formula" id="fMinorA"></div>
+          <p class="muted"><span class="en">Start from the <b>same</b> root as major and lower 3, 6 and 7. This makes it easy to hear what makes minor sound "sad".</span><span class="zh">跟大調從<b>同一個</b>主音開始，把 3、6、7 降半音。這樣很容易聽出小調「憂鬱」的感覺是從哪來的。</span></p>
+        </div>
+        <div class="box">
+          <h3><span class="en">Minor, way</span><span class="zh">小調，</span> <span class="pill b">B</span> <span class="en">(the root is La)</span><span class="zh">（主音當 La）</span></h3>
+          <div class="formula" id="fMinorB"></div>
+          <p class="muted"><span class="en">Nothing new to learn: minor is just the major scale starting from <b>La (6)</b>. Your fingers and cells stay exactly the same.</span><span class="zh">不用學新的東西：小調就是大調從 <b>La（6）</b>開始彈。手指和「型」完全一樣。</span></p>
+        </div>
+        <div class="box" id="relCard"></div>
+      </div>
+      <div class="box">
+        <h3><span class="en">Translator: B ⇄ A</span><span class="zh">轉換器：B ⇄ A</span></h3>
+        <p class="muted"><span class="en">From your notes: <code>6 7 1 3 2 1</code> (way B) is the same melody as <code>1 2 ♭3 5 4 ♭3</code> (way A). Type numbers with spaces between them (b = flat, # = sharp).</span><span class="zh">筆記上的例子：<code>6 7 1 3 2 1</code>（B）跟 <code>1 2 ♭3 5 4 ♭3</code>（A）是同一段旋律。輸入數字、用空格隔開（b 是降、# 是升）。</span></p>
+        <div class="translator">
+          <div class="seg" id="trDir">
+            <button data-dir="BtoA" class="on">B → A</button>
+            <button data-dir="AtoB">A → B</button>
+          </div>
+          <input id="trIn" value="6 7 1 3 2 1" spellcheck="false">
+          <div id="trOut" class="tr-out"></div>
+          <div><button class="btn primary" id="trPlay">▶ <span class="en">Play it</span><span class="zh">播放</span></button></div>
+        </div>
+      </div>
+      <div class="box">
+        <h3><span class="en">See it on the neck</span><span class="zh">在指板上看</span></h3>
+        <p class="muted"><span class="en">Flip between these. Minor and its relative major are the exact same notes, only the home note (filled dot) moves. The parallel major changes 3 notes (outlined in orange on the minor view).</span><span class="zh">切換看看。小調跟關係大調的音完全一樣，只有主音（實心點）換位置。同主音大調則是差 3 個音（在小調畫面用橘色圈標出）。</span></p>
+        <div class="seg" id="relSeg"></div>
+        <div class="board-wrap"><div id="relBoard" class="board"></div></div>
+      </div>
+    </section>
+
+    <!-- MODES -->
+    <section id="tab-modes" class="tab">
+      <div class="score-head">
+        <h2><span class="en">Modes</span><span class="zh">調式</span> 一 – 七</h2>
+        <p class="sub"><span class="en">7 scales from the same 7 notes</span><span class="zh">同樣 7 個音的 7 種音階</span></p>
+      </div>
+      <p class="lead"><span class="en">Two ways to see them: <span class="pill a">A</span> start them all on the <b>same root</b> and compare to major, or <span class="pill b">B</span> "major based on Do": each mode is just the major scale started on a different note.</span><span class="zh">兩種看法：<span class="pill a">A</span> 全部從<b>同一個主音</b>開始，跟大調比較差在哪；<span class="pill b">B</span>「以 Do 為準的大調」：每個調式就是大調從不同的音開始彈。</span></p>
+      <div class="seg" id="modeView">
+        <button data-v="A" class="on"><span class="en">A · same root</span><span class="zh">A · 同主音</span></button>
+        <button data-v="B"><span class="en">B · same notes</span><span class="zh">B · 同一組音</span></button>
+      </div>
+      <div class="box" style="margin-top:12px"><div id="modeTable"></div></div>
+      <div class="box">
+        <h3><span class="en">Bright → dark ladder</span><span class="zh">從亮到暗的階梯</span></h3>
+        <p class="muted"><span class="en">Each step down lowers just <b>one</b> note (like the arrows on your cells page). Tap a step to hear it.</span><span class="zh">每往下一階，只降<b>一個</b>音（就是筆記最後一頁那些箭頭）。點一下可以聽。</span></p>
+        <div id="ladder" class="ladder"></div>
+      </div>
+    </section>
+
+    <!-- PRACTICE -->
+    <section id="tab-practice" class="tab">
+      <div class="score-head">
+        <h2><span class="en">Practice</span><span class="zh">練習</span></h2>
+        <p class="sub"><span class="en">A few minutes every day beats one long session</span><span class="zh">每天練幾分鐘比一次練很久有用</span></p>
+      </div>
+      <div class="seg" id="quizSeg">
+        <button data-q="find"><span class="en">Find it</span><span class="zh">找音</span></button>
+        <button data-q="name"><span class="en">Name it</span><span class="zh">認音</span></button>
+        <button data-q="ear"><span class="en">Ear training</span><span class="zh">聽音</span></button>
+      </div>
+      <div class="toolbar" style="margin-top:10px">
+        <div class="badges" id="quizPos"></div>
+        <div class="score" id="score"></div>
+      </div>
+      <div class="box quiz">
+        <div class="prompt" id="qPrompt"></div>
+        <div class="board-wrap"><div id="quizBoard" class="board"></div></div>
+        <div class="answers" id="qAnswers"></div>
+        <div class="feedback" id="qFeedback"></div>
+        <button class="btn primary" id="qNext"><span class="en">Next →</span><span class="zh">下一題 →</span></button>
+      </div>
+    </section>
+
+    <!-- PERSPECTIVES -->
+    <section id="tab-perspectives" class="tab">
+      <div class="score-head">
+        <h2><span class="en">Other ways to learn it</span><span class="zh">其他教法</span></h2>
+        <p class="sub"><span class="en">Match your teacher's system to books, YouTube and apps</span><span class="zh">讓老師教的跟書上、YouTube、App 對得上</span></p>
+      </div>
+      <div class="persp" id="persp"></div>
+    </section>
+
+    <!-- NOTES -->
+    <section id="tab-notes" class="tab">
+      <div class="score-head">
+        <h2><span class="en">Lesson notes</span><span class="zh">上課筆記</span></h2>
+        <p class="sub"><span class="en">The original pages. Tap a photo to make it bigger.</span><span class="zh">原本的筆記，點照片可以放大。</span></p>
+      </div>
+      <div id="notesList" class="notes-list"></div>
+    </section>
+
+  </main>
+
+  <!-- RIGHT: inspector modules -->
+  <aside class="side side-right" id="inspector">
+    <div class="mod">
+      <div class="mod-head"><span class="en">Key</span><span class="zh">調</span></div>
+      <div class="mod-body">
+        <div class="field-row">
+          <label class="field"><span class="en">Root</span><span class="zh">主音</span><select id="keySel"></select></label>
+          <label class="field"><span class="en">Scale</span><span class="zh">音階</span><select id="modeSel"></select></label>
+        </div>
+        <label class="field"><span class="en">Show notes as</span><span class="zh">音符顯示</span><select id="labelSel"></select></label>
+      </div>
+    </div>
+    <div class="mod jam">
+      <div class="mod-head"><span class="en">Jam track</span><span class="zh">即興伴奏</span></div>
+      <div class="mod-body">
+        <div class="video">
+          <iframe src="https://www.youtube-nocookie.com/embed/78-nA8U6Rj8?rel=0&amp;modestbranding=1"
+            title="Rock Pop Backing Track A Major | A E Bm D | 80 BPM"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        <p class="jam-meta"><b>A major</b> · 80 BPM · A – E – Bm – D</p>
+        <div class="jam-chords" id="jamChords"></div>
+        <p class="muted jam-tip" id="jamTip"></p>
+        <div class="jam-links">
+          <button class="mini-btn" id="jamTempo"><span class="en">Set app tempo to 80</span><span class="zh">把速度設成 80</span></button>
+          <a href="https://www.youtube.com/watch?v=78-nA8U6Rj8" target="_blank" rel="noopener"><span class="en">Open on YouTube ↗</span><span class="zh">在 YouTube 開啟 ↗</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="mod fb-view">
+      <div class="mod-head"><span class="en">Fretboard view</span><span class="zh">指板顯示</span></div>
+      <div class="mod-body">
+        <label class="sw"><input type="checkbox" id="tgCells"><i></i><span class="en">Cells 型</span><span class="zh">顯示「型」</span></label>
+        <label class="sw"><input type="checkbox" id="tgAnchors"><i></i><span class="en">Anchors &amp; shifts</span><span class="zh">定位與換把</span></label>
+        <label class="sw"><input type="checkbox" id="tgFingers"><i></i><span class="en">Fingers</span><span class="zh">指法</span></label>
+        <label class="field" style="margin:6px 0 8px"><span class="en">Fingering</span><span class="zh">指法方式</span>
+          <select id="fingeringSel"></select></label>
+        <label class="sw"><input type="checkbox" id="tgTriad"><i></i><span class="en">Chord tones (1·3·5)</span><span class="zh">和弦音 (1·3·5)</span></label>
+        <label class="sw"><input type="checkbox" id="tgGhost"><i></i><span class="en">Rest of neck</span><span class="zh">顯示其他把位</span></label>
+        <label class="sw"><input type="checkbox" id="tgChromatic"><i></i><span class="en">Notes not in the scale</span><span class="zh">音階外的音</span></label>
+      </div>
+    </div>
+    <div class="mod fb-only">
+      <div class="mod-head"><span class="en">This note</span><span class="zh">這個音</span></div>
+      <div class="mod-body" id="noteInfo">
+        <p class="muted"><span class="en">Tap any note on the neck. You'll hear it and see all its names: letter, fixed-do, and the A / B numbers.</span><span class="zh">點指板上任何一個音，會發出聲音，也會顯示它的各種叫法：音名、固定調唱名、A / B 兩種數字。</span></p>
+      </div>
+    </div>
+    <div class="mod fb-only">
+      <div class="mod-head"><span class="en">This position</span><span class="zh">這個把位</span></div>
+      <div class="mod-body" id="posInfo"></div>
+    </div>
+  </aside>
+  </div>
+
+
+<div id="lightbox" class="lightbox" hidden><img alt=""></div>
+
+<script src="js/theory.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/fretboard.js"></script>
+<script src="js/content.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
